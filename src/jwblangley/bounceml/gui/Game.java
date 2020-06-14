@@ -25,6 +25,8 @@ public class Game extends Application {
 
   private Label timerLabel;
 
+  private double score;
+
   @Override
   public void start(Stage stage) throws Exception {
     stage.setTitle("Bounce");
@@ -56,14 +58,25 @@ public class Game extends Application {
         double time = System.currentTimeMillis() - startTime;
         timerLabel.setText(String.format("Time: %.3f", time / 1000d));
 
+        // Win condition
+        if (time / 1000d > 10) {
+          score = 100 * time / 1000;
+          stage.close();
+        }
+
+        // Lose condition
+        if (getSpriteY() > HEIGHT - sprite.getRadius()) {
+          score = time;
+          stage.close();
+        }
+
         fallVelocity += GRAVITY;
         if (jump.getAndUpdate(a -> a)) {
           jump.set(false);
           fallVelocity = -1 * JUMP_POWER;
         }
 
-        sprite.setCenterY(clamp(sprite.getCenterY() + fallVelocity, sprite.getRadius(),
-            HEIGHT - sprite.getRadius()));
+        sprite.setCenterY(Math.max(getSpriteY() + fallVelocity, sprite.getRadius()));
       }
     }.start();
 
@@ -74,8 +87,12 @@ public class Game extends Application {
     return fallVelocity;
   }
 
-  private double getSpiteY() {
+  private double getSpriteY() {
     return sprite.getCenterY();
+  }
+
+  public double getScore() {
+    return score;
   }
 
   public void requestJump(AtomicReference<Boolean> jump, AtomicReference<Boolean> canJump) {
@@ -93,7 +110,4 @@ public class Game extends Application {
     }
   }
 
-  private static double clamp(double value, double min, double max) {
-    return Math.max(min, Math.min(max, value));
-  }
 }
