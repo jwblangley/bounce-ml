@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import jwblangley.bounceml.GameApp.Mode;
 import jwblangley.neat.phenotype.Network;
 
 public class Game extends Stage {
@@ -91,8 +92,20 @@ public class Game extends Stage {
           // Update sprite
           sprite.update();
         }
+
+        if (sprites.stream().noneMatch(Sprite::isAlive)) {
+          Game.this.close();
+        }
       }
     }.start();
+  }
+
+  public double getSinglePlayerScore() {
+    if (GameApp.mode != Mode.SINGLE_PLAYER) {
+      throw new UnsupportedOperationException("Cannot get single player score in non single player game");
+    }
+
+    return sprites.get(0).getScore();
   }
 
 
