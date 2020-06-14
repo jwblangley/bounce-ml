@@ -5,6 +5,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -22,6 +23,8 @@ public class Game extends Application {
   private Circle sprite;
   private double fallVelocity = 0;
 
+  private Label timerLabel;
+
   @Override
   public void start(Stage stage) throws Exception {
     stage.setTitle("Bounce");
@@ -29,6 +32,9 @@ public class Game extends Application {
     Group root = new Group();
     Scene scene = new Scene(root, WIDTH, HEIGHT);
     stage.setScene(scene);
+
+    timerLabel = new Label("Time: 0.00s");
+    root.getChildren().add(timerLabel);
 
     sprite = new Circle(WIDTH / 2d, HEIGHT / 2d, 12.5, Color.BLACK);
     root.getChildren().add(sprite);
@@ -41,9 +47,15 @@ public class Game extends Application {
       }
     });
 
+    double startTime = System.currentTimeMillis();
+
     new AnimationTimer() {
       @Override
       public void handle(long now) {
+        // Update timerLabel
+        double time = System.currentTimeMillis() - startTime;
+        timerLabel.setText(String.format("Time: %.3f", time / 1000d));
+
         fallVelocity += GRAVITY;
         if (jump.getAndUpdate(a -> a)) {
           jump.set(false);
