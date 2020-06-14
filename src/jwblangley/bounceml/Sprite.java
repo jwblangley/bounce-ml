@@ -3,6 +3,7 @@ package jwblangley.bounceml;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import jwblangley.neat.phenotype.Network;
 
 public class Sprite extends Circle {
 
@@ -15,8 +16,15 @@ public class Sprite extends Circle {
   private double score;
   private boolean alive;
 
-  public Sprite(double centreX, double centreY) {
-    super(centreX, centreY, RADIUS, Color.BLACK);
+  private final Network neuralNetwork;
+
+  public Sprite() {
+    this(null);
+  }
+
+  public Sprite(Network neuralNetwork) {
+    super(Game.WIDTH / 2, Game.HEIGHT / 2, RADIUS, Color.BLACK);
+    this.neuralNetwork = neuralNetwork;
     canJump = new AtomicReference<>(true);
     alive = true;
   }
@@ -41,6 +49,10 @@ public class Sprite extends Circle {
     if (alive) {
       fallVelocity += Game.GRAVITY;
       setCenterY(Math.max(getHeight() + fallVelocity, getRadius()));
+
+      if (neuralNetwork != null) {
+        // TODO: neural network control
+      }
     }
   }
 
