@@ -36,12 +36,12 @@ public class GameApp extends Application {
       System.out.println("The AI's score was: " + game.getOnlyPlayersScore());
     } else if (mode == Mode.TRAIN) {
 
-      final int populationSize = 2;
+      final int populationSize = 20;
       final int targetNumSpecies = 2;
-      final int evolutions = 1;
+      final int evolutions = 5;
 
       Evolution evolution = EvolutionFactory
-          .createOptimisation(1, 2, populationSize, targetNumSpecies, genotypes -> {
+          .createOptimisation(1, 1, populationSize, targetNumSpecies, genotypes -> {
             List<Sprite> sprites = genotypes.stream()
                 .map(Network::createSigmoidOutputNetworkFromGenotype)
                 .map(Sprite::new)

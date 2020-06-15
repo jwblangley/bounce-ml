@@ -51,7 +51,12 @@ public class Sprite extends Circle {
       setCenterY(Math.max(getHeight() + fallVelocity, getRadius()));
 
       if (neuralNetwork != null) {
-        // TODO: neural network control
+        double networkOutput = neuralNetwork.calculateOutputs(getHeight()).get(0);
+
+        // Sigmoid output to binary
+        if (networkOutput > 0.5) {
+          requestJump();
+        }
       }
     }
   }
