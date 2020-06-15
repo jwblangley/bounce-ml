@@ -17,7 +17,7 @@ public class Game extends Stage {
 
   public static final double GRAVITY = 0.5d;
   public static final int MILLIS_BETWEEN_JUMPS = 150;
-  public static final double WIN_TIME = 10d;
+  public static final double WIN_TIME = 3d;
 
   private Label timerLabel;
 
@@ -81,7 +81,7 @@ public class Game extends Stage {
           }
 
           // Lose condition
-          if (sprite.getHeight() > HEIGHT - sprite.getRadius()) {
+          if (sprite.getHeight() > HEIGHT - sprite.getRadius() || sprite.getHeight() <  1.5 * sprite.getRadius()) {
             sprite.kill(time / 1000d);
           }
 

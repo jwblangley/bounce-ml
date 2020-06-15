@@ -1,5 +1,6 @@
 package jwblangley.bounceml;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -9,6 +10,7 @@ import javafx.stage.Stage;
 import jwblangley.neat.evolution.Evolution;
 import jwblangley.neat.evolution.EvolutionFactory;
 import jwblangley.neat.phenotype.Network;
+import jwblangley.neat.proto.ProtoIO;
 
 public class GameApp extends Application {
 
@@ -36,9 +38,9 @@ public class GameApp extends Application {
       System.out.println("The AI's score was: " + game.getOnlyPlayersScore());
     } else if (mode == Mode.TRAIN) {
 
-      final int populationSize = 20;
-      final int targetNumSpecies = 2;
-      final int evolutions = 5;
+      final int populationSize = 1000;
+      final int targetNumSpecies = 100;
+      final int evolutions = 100;
 
       Evolution evolution = EvolutionFactory
           .createOptimisation(1, 1, populationSize, targetNumSpecies, genotypes -> {
@@ -51,14 +53,32 @@ public class GameApp extends Application {
             game.init();
             game.showAndWait();
 
-            return sprites.stream().map(Sprite::getScore).collect(Collectors.toList());
+            return sprites.stream()
+                .map(Sprite::getScore)
+                .map(d -> Math.pow(d * 10, 3))
+                .collect(Collectors.toList());
           });
 
-      Random random = new Random(100);
+      Random random = new Random();
+
+      double highestScoreEver = Double.MIN_VALUE;
+      int saves = 0;
+      File saveDir = new File("saves");
+      if (!saveDir.exists()) {
+        saveDir.mkdir();
+      }
 
       evolution.setVerbose(true);
       for (int i = 0; i < evolutions; i++) {
         evolution.evolve(random);
+        System.out.println();
+
+        if (evolution.getHighestFitness() > highestScoreEver) {
+          highestScoreEver = evolution.getHighestFitness();
+          saves++;
+
+          ProtoIO.toFile(evolution.getFittestGenotype(), new File("saves/save" + saves + ".geno"));
+        }
       }
 
     }

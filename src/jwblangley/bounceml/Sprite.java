@@ -51,7 +51,7 @@ public class Sprite extends Circle {
       setCenterY(Math.max(getHeight() + fallVelocity, getRadius()));
 
       if (neuralNetwork != null) {
-        double networkOutput = neuralNetwork.calculateOutputs(getHeight()).get(0);
+        double networkOutput = neuralNetwork.calculateOutputs(getHeight() / Game.HEIGHT).get(0);
 
         // Sigmoid output to binary
         if (networkOutput > 0.5) {
