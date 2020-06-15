@@ -1,7 +1,11 @@
 package jwblangley.bounceml;
 
+import java.io.File;
+import java.io.IOException;
 import javafx.application.Application;
 import jwblangley.bounceml.GameApp.Mode;
+import jwblangley.neat.phenotype.Network;
+import jwblangley.neat.proto.ProtoIO;
 
 public class Main {
 
@@ -13,8 +17,26 @@ public class Main {
 
     if (args[0].equals("--singleplayer")) {
       GameApp.mode = Mode.SINGLE_PLAYER;
-      Application.launch(GameApp.class);
+    } else if (args[0].equals("--train")) {
+      GameApp.mode = Mode.TRAIN;
+    } else if (args[0].equals("--watch")) {
+      if (args.length != 2) {
+        printUsage();
+        return;
+      }
+      File networkFile = new File(args[1]);
+
+      GameApp.mode = Mode.WATCH;
+      try {
+        GameApp.watchNetwork = Network
+            .createSigmoidOutputNetworkFromGenotype(ProtoIO.networkFromFile(networkFile));
+      } catch (IOException e) {
+        System.err.println("Could not load network");
+        return;
+      }
     }
+
+    Application.launch(GameApp.class);
   }
 
   public static void printUsage() {

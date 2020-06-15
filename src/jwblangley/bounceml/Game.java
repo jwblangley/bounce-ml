@@ -2,7 +2,6 @@ package jwblangley.bounceml;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -10,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import jwblangley.bounceml.GameApp.Mode;
-import jwblangley.neat.phenotype.Network;
 
 public class Game extends Stage {
 
@@ -39,13 +37,11 @@ public class Game extends Stage {
   /**
    * Constructs a new game with AI players
    *
-   * @param neuralNetworks list of neural network players
+   * @param aiSprites list of neural network-controlled sprites
    */
-  public Game(List<Network> neuralNetworks) {
+  public Game(List<Sprite> aiSprites) {
     this.singlePlayer = false;
-    sprites = neuralNetworks.stream()
-        .map(Sprite::new)
-        .collect(Collectors.toList());
+    this.sprites = aiSprites;
   }
 
   public void init() {
@@ -100,8 +96,8 @@ public class Game extends Stage {
     }.start();
   }
 
-  public double getSinglePlayerScore() {
-    if (GameApp.mode != Mode.SINGLE_PLAYER) {
+  public double getOnlyPlayersScore() {
+    if (GameApp.mode != Mode.SINGLE_PLAYER && GameApp.mode != Mode.WATCH) {
       throw new UnsupportedOperationException("Cannot get single player score in non single player game");
     }
 
