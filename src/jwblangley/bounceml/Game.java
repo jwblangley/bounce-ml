@@ -19,7 +19,7 @@ public class Game extends Stage {
   public static final int MILLIS_BETWEEN_JUMPS = 150;
   public static final double WIN_TIME = 3d;
 
-  private Label timerLabel;
+  private Label scoreLabel;
 
   private final List<Sprite> sprites;
   private final boolean singlePlayer;
@@ -49,8 +49,8 @@ public class Game extends Stage {
     Scene scene = new Scene(root, WIDTH, HEIGHT);
     this.setScene(scene);
 
-    timerLabel = new Label("Time: 0.00s");
-    root.getChildren().add(timerLabel);
+    scoreLabel = new Label("Time: 0.00s");
+    root.getChildren().add(scoreLabel);
 
     for (Sprite sprite : sprites) {
       root.getChildren().add(sprite);
@@ -64,25 +64,28 @@ public class Game extends Stage {
       });
     }
 
+    final long[] score = {0};
     double startTime = System.currentTimeMillis();
 
     new AnimationTimer() {
       @Override
       public void handle(long now) {
-        // Update timerLabel
-        double time = System.currentTimeMillis() - startTime;
-        timerLabel.setText(String.format("Time: %.3f", time / 1000d));
+        double time = (System.currentTimeMillis() - startTime) / 1000d;
+
+        // Update scoreLabel
+        score[0]++;
+        scoreLabel.setText(String.format("Score: %.1f", score[0] / 100d));
 
         // Update sprites
         for (Sprite sprite : sprites) {
           // Win condition
-          if (time / 1000d > WIN_TIME) {
-            sprite.kill(100 * time / 1000);
+          if (time > WIN_TIME) {
+            sprite.kill(100 * score[0] / 100d);
           }
 
           // Lose condition
           if (sprite.getHeight() > HEIGHT - sprite.getRadius() || sprite.getHeight() <  1.5 * sprite.getRadius()) {
-            sprite.kill(time / 1000d);
+            sprite.kill(score[0] / 100d);
           }
 
           // Update sprite
